@@ -5,6 +5,8 @@ This repository contains a Turborepo setup using pnpm workspaces with two boiler
 - **frontend-boilerplate** – a Next.js app
 - **backend-boilerplate** – a NestJS app
 
+Also we have a `shared-lib-boilerplate` package that can be clone to create a package that other apps and packages can use.
+
 A shared `types` package provides TypeScript types used by both apps.
 
 ## Scripts
