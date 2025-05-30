@@ -98,7 +98,13 @@
 			"!**/*.e2e-spec.ts",
 			"!**/migrations/**",
 			"!**/main.ts",
-			"!**/migrate.ts"
+			"!**/migrate.ts",
+			"!**/decorators/**",
+			"!**/*.dto.ts",
+			"!**/*.module.ts",
+			"!**/health/**",
+			"!**/configs/**",
+			"!**/entities/**"
 		],
 		"coverageDirectory": "../coverage",
 		"testEnvironment": "node",
