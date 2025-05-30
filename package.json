@@ -12,6 +12,7 @@
 		"format": "turbo run format --cache-dir=.turbo",
 		"type-check": "turbo run type-check --cache-dir=.turbo",
 		"test": "turbo run test --cache-dir=.turbo",
+		"test:coverage": "turbo run test:coverage --cache-dir=.turbo",
 		"prepare": "husky"
 	},
 	"devDependencies": {

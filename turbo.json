@@ -38,6 +38,11 @@
     },
     "format": {
       "outputs": []
+    },
+    "test:coverage": {
+      "outputs": [
+        "coverage/**"
+      ]
     }
   }
 }
