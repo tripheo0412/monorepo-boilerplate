@@ -1,0 +1,204 @@
+openapi: 3.0.0
+paths:
+  /:
+    get:
+      operationId: AppController_getHello
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+        - App
+  /auth/register:
+    post:
+      operationId: AuthController_register
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterDto'
+      responses:
+        '201':
+          description: User successfully registered
+        '409':
+          description: User with this email already exists
+      summary: Register a new user
+      tags: &ref_0
+        - Authentication
+  /auth/login:
+    post:
+      operationId: AuthController_login
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginDto'
+      responses:
+        '200':
+          description: Successfully logged in
+        '401':
+          description: Invalid credentials
+      summary: Login user
+      tags: *ref_0
+  /health:
+    get:
+      operationId: HealthController_check
+      parameters: []
+      responses:
+        '200':
+          description: The Health Check is successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  info:
+                    type: object
+                    example: &ref_1
+                      database: &ref_2
+                        status: up
+                    additionalProperties:
+                      type: object
+                      required:
+                        - status
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties: true
+                    nullable: true
+                  error:
+                    type: object
+                    example: {}
+                    additionalProperties:
+                      type: object
+                      required:
+                        - status
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties: true
+                    nullable: true
+                  details:
+                    type: object
+                    example: *ref_1
+                    additionalProperties:
+                      type: object
+                      required:
+                        - status
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties: true
+        '503':
+          description: The Health Check is not successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  info:
+                    type: object
+                    example: *ref_1
+                    additionalProperties:
+                      type: object
+                      required:
+                        - status
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties: true
+                    nullable: true
+                  error:
+                    type: object
+                    example:
+                      redis: &ref_3
+                        status: down
+                        message: Could not connect
+                    additionalProperties:
+                      type: object
+                      required:
+                        - status
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties: true
+                    nullable: true
+                  details:
+                    type: object
+                    example:
+                      database: *ref_2
+                      redis: *ref_3
+                    additionalProperties:
+                      type: object
+                      required:
+                        - status
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties: true
+      summary: Get health status
+      tags:
+        - health
+info:
+  title: Backend Boilerplate API
+  description: ''
+  version: 1.0.0
+  contact:
+    name: Tri Hoang
+    url: https://trihoang.xyz/
+    email: hoangtri241097@gmail.com
+tags:
+  - name: Authentication
+    description: Authenticating to API
+    externalDocs:
+      description: Find out more about authentication flow
+      url: https://trihoang.xyz/
+servers:
+  - url: http://localhost:3001
+    description: Local server URL
+components:
+  securitySchemes:
+    bearer:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http
+  schemas:
+    RegisterDto:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+        firstname:
+          type: string
+        lastname:
+          type: string
+        agreedToTerms:
+          type: boolean
+      required:
+        - email
+        - password
+        - firstname
+        - lastname
+        - agreedToTerms
+    LoginDto:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - email
+        - password

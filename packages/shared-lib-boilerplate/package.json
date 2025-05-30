@@ -1,0 +1,37 @@
+{
+	"name": "shared-lib-boilerplate",
+	"version": "1.0.0",
+	"main": "./dist/index.js",
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.ts",
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build-libs": "tsup ./src/index.ts --format esm,cjs --dts --sourcemap",
+		"test": "jest",
+		"test:watch": "jest --watch",
+		"test:coverage": "jest --coverage",
+		"lint": "eslint 'src/**/*.ts'",
+		"type-check": "tsc",
+		"prettier": "prettier src --check \"./**/*.{js,jsx,ts,tsx,css,scss,md,mdx,json,mjs}\" --config ./.prettierrc.json",
+		"format": "prettier --write \"./**/*.{js,jsx,ts,tsx,css,scss,md,mdx,json,mjs}\" --config ./.prettierrc.json"
+	},
+	"devDependencies": {
+		"typescript": "^5.8.3",
+		"eslint": "^9.27.0",
+		"@typescript-eslint/eslint-plugin": "^8.33.0",
+		"@typescript-eslint/parser": "^8.33.0",
+		"prettier": "^3.5.3",
+		"eslint-plugin-prettier": "^5.4.0",
+		"eslint-config-prettier": "^10.1.5",
+		"globals": "^16.2.0",
+		"tsup": "^8.5.0",
+		"jest": "^29.7.0",
+		"@types/jest": "^29.5.14",
+		"ts-jest": "^29.2.5"
+	},
+	"dependencies": {
+		"types": "workspace:*"
+	}
+}
