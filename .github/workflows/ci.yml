@@ -67,14 +67,6 @@ jobs:
       - name: Check code formatting
         run: pnpm prettier
 
-      - name: Upload built packages
-        uses: actions/upload-artifact@v4
-        with:
-          name: built-packages
-          path: |
-            packages/*/dist
-          retention-days: 1
-
   test:
     name: Test
     needs: build-lint-format
@@ -144,11 +136,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Download built packages
-        uses: actions/download-artifact@v4
-        with:
-          name: built-packages
-          path: packages
+      - name: Build types package
+        run: pnpm build-type
+
+      - name: Build shared libraries
+        run: pnpm build-libs
 
       - name: Setup test environment
         run: |
@@ -166,12 +158,3 @@ jobs:
 
       - name: Run tests with coverage
         run: pnpm test:coverage
-
-      - name: Upload coverage reports
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-reports
-          path: |
-            apps/*/coverage
-            packages/*/coverage
-          retention-days: 7
