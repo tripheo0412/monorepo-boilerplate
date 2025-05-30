@@ -9,30 +9,30 @@ on:
       - master
 
 jobs:
-  install-and-build:
-    name: Install Dependencies and Build
+  build-lint-format:
+    name: Build, Lint and Format Check
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          
+
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 10.5.2
           run_install: false
-          
+
       - name: Get pnpm store directory
         shell: bash
         run: |
           echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-          
+
       - name: Setup pnpm cache
         uses: actions/cache@v4
         with:
@@ -40,7 +40,7 @@ jobs:
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
-            
+
       - name: Setup turbo cache
         uses: actions/cache@v4
         with:
@@ -48,16 +48,22 @@ jobs:
           key: ${{ runner.os }}-turbo-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-turbo-
-            
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-        
+
       - name: Build types package
         run: pnpm build-type
-        
+
       - name: Build shared libraries
         run: pnpm build-libs
-        
+
+      - name: Run ESLint
+        run: pnpm lint
+
+      - name: Check code formatting
+        run: pnpm prettier
+
       - name: Upload built packages
         uses: actions/upload-artifact@v4
         with:
@@ -66,84 +72,31 @@ jobs:
             packages/*/dist
           retention-days: 1
 
-  lint:
-    name: Lint
-    needs: install-and-build
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10.5.2
-          run_install: false
-          
-      - name: Get pnpm store directory
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-          
-      - name: Setup pnpm cache
-        uses: actions/cache@v4
-        with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-            
-      - name: Setup turbo cache
-        uses: actions/cache@v4
-        with:
-          path: .turbo
-          key: ${{ runner.os }}-turbo-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-
-            
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-        
-      - name: Download built packages
-        uses: actions/download-artifact@v4
-        with:
-          name: built-packages
-          path: packages
-          
-      - name: Run ESLint
-        run: pnpm lint
-
   type-check:
     name: Type Check
-    needs: install-and-build
+    needs: build-lint-format
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          
+
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 10.5.2
           run_install: false
-          
+
       - name: Get pnpm store directory
         shell: bash
         run: |
           echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-          
+
       - name: Setup pnpm cache
         uses: actions/cache@v4
         with:
@@ -151,7 +104,7 @@ jobs:
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
-            
+
       - name: Setup turbo cache
         uses: actions/cache@v4
         with:
@@ -159,71 +112,24 @@ jobs:
           key: ${{ runner.os }}-turbo-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-turbo-
-            
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-        
+
       - name: Download built packages
         uses: actions/download-artifact@v4
         with:
           name: built-packages
           path: packages
-          
+
       - name: Run TypeScript type checking
         run: pnpm type-check
 
-  format-check:
-    name: Format Check
-    needs: install-and-build
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10.5.2
-          run_install: false
-          
-      - name: Get pnpm store directory
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-          
-      - name: Setup pnpm cache
-        uses: actions/cache@v4
-        with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-            
-      - name: Setup turbo cache
-        uses: actions/cache@v4
-        with:
-          path: .turbo
-          key: ${{ runner.os }}-turbo-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-
-            
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-        
-      - name: Check code formatting
-        run: pnpm prettier
-
   test:
     name: Test
-    needs: install-and-build
+    needs: build-lint-format
     runs-on: ubuntu-latest
-    
+
     services:
       postgres:
         image: postgres:16
@@ -238,7 +144,7 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-          
+
       redis:
         image: redis:7
         ports:
@@ -248,27 +154,27 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          
+
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 10.5.2
           run_install: false
-          
+
       - name: Get pnpm store directory
         shell: bash
         run: |
           echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-          
+
       - name: Setup pnpm cache
         uses: actions/cache@v4
         with:
@@ -276,7 +182,7 @@ jobs:
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
-            
+
       - name: Setup turbo cache
         uses: actions/cache@v4
         with:
@@ -284,19 +190,20 @@ jobs:
           key: ${{ runner.os }}-turbo-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-turbo-
-            
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-        
+
       - name: Download built packages
         uses: actions/download-artifact@v4
         with:
           name: built-packages
           path: packages
-          
+
       - name: Setup test environment
         run: |
           cp apps/backend-boilerplate/.env.example apps/backend-boilerplate/.env.test
+          echo "NODE_ENV=local" >> apps/backend-boilerplate/.env.test
           echo "DATABASE_NAME=test_db" >> apps/backend-boilerplate/.env.test
           echo "POSTGRES_HOST=localhost" >> apps/backend-boilerplate/.env.test
           echo "POSTGRES_PORT=5432" >> apps/backend-boilerplate/.env.test
@@ -306,23 +213,13 @@ jobs:
           echo "REDIS_PORT=6379" >> apps/backend-boilerplate/.env.test
           echo "JWT_SECRET=test-secret-key-for-ci" >> apps/backend-boilerplate/.env.test
           echo "JWT_EXPIRES_IN=7d" >> apps/backend-boilerplate/.env.test
-          
-      - name: Run backend migrations
-        working-directory: apps/backend-boilerplate
-        env:
-          NODE_ENV: test
-        run: pnpm mikro-orm migration:up
-        
+
       - name: Run all tests
-        env:
-          NODE_ENV: test
         run: pnpm test
-        
+
       - name: Run test coverage
-        env:
-          NODE_ENV: test
         run: pnpm test:coverage
-        
+
       - name: Upload coverage reports
         uses: actions/upload-artifact@v4
         with:
@@ -331,12 +228,3 @@ jobs:
             apps/*/coverage
             packages/*/coverage
           retention-days: 7
-
-  all-checks-passed:
-    name: All Checks Passed
-    needs: [lint, type-check, format-check, test]
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: All checks completed successfully
-        run: echo "✅ All CI checks passed!"
