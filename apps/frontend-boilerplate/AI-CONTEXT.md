@@ -20,7 +20,7 @@ This is a Next.js 15 frontend boilerplate with TypeScript, Tailwind CSS, shadcn/
 - **Component Development**: Storybook for UI development
 - **Toast Notifications**: Sonner
 - **Authentication**: JWT with automatic token management
-- **Shared Types**: TypeScript interfaces from `@repo/types`
+- **Shared Types**: TypeScript interfaces from `types`
 - **Validation**: Zod schemas typed with shared DTOs
 
 ### Key Patterns
@@ -115,7 +115,7 @@ pnpm storybook
 
 ### Creating Forms
 
-1. Import DTO types from `@repo/types`
+1. Import DTO types from `types`
 2. Define Zod schema typed with `satisfies z.ZodType<DtoType>`
 3. Use React Hook Form with zodResolver
 4. Use shadcn/ui form components
@@ -274,7 +274,7 @@ pnpm test:coverage
 ### Form Pattern
 
 ```tsx
-import type {MyFormDto} from '@repo/types'
+import type {MyFormDto} from 'types'
 
 const formSchema = z.object({
 	field: z.string().min(1),

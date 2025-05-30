@@ -91,7 +91,7 @@ src/
 1. Define DTO interfaces in `packages/types/src/` for request/response
 2. **IMPORTANT**: Run `pnpm build-type` from root to build the types library
 3. Create DTO classes in module's `dto/` folder:
-   - Implement interfaces from `@repo/types`
+   - Implement interfaces from `types`
    - Add class-validator decorators for validation
    - Add @ApiProperty() decorators for Swagger
 4. Create controller method with Swagger decorators

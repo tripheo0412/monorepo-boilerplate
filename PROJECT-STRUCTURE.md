@@ -93,20 +93,22 @@ This document explains the monorepo structure and how to use the boilerplates ef
 
 ## 📦 Shared Packages
 
-### Using @repo/types
+### Using types
 
 The `packages/types` directory contains shared TypeScript types between frontend and backend.
+
+Install it using "types": "workspace:*" in package.json dependencies
 
 **In backend:**
 
 ```typescript
-import {UserType} from '@repo/types'
+import {UserType} from 'types'
 ```
 
 **In frontend:**
 
 ```typescript
-import {UserType} from '@repo/types'
+import {UserType} from 'types'
 ```
 
 **Adding new types:**
@@ -159,7 +161,7 @@ pnpm add -w eslint
 **To shared packages:**
 
 ```bash
-pnpm add zod --filter=@repo/types
+pnpm add zod --filter=types
 ```
 
 ## 📝 Documentation Standards

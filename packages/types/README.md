@@ -1,4 +1,4 @@
-# @repo/types
+# types
 
 Shared TypeScript type definitions for the AI Document Agent monorepo.
 
@@ -97,7 +97,7 @@ Other packages import from the built `dist/` folder, not the source files. Witho
 3. Export from the appropriate module file
 4. Add export to `src/index.ts`
 5. Run `pnpm build-type` to build the package
-6. Import in your apps using `@repo/types`
+6. Import in your apps using `types`
 
 ### Example: Adding a New Feature DTO
 
@@ -161,5 +161,5 @@ export * from './feature'
 3. **Keep DTOs simple**: Only include serializable data
 4. **No business logic**: This package should only contain type definitions
 5. **Version carefully**: Changes here affect all consuming packages
-6. **Import correctly**: Use `import type {...} from 'types'` NOT `@repo/types`
+6. **Import correctly**: Use `import type {...} from 'types'`
 7. **Update docs**: Always update README when adding new types

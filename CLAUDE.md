@@ -68,7 +68,7 @@ pnpm test:watch   # Run tests in watch mode
 
 ### Shared Patterns
 
-- **Types**: Shared via `@repo/types` package
+- **Types**: Shared via `apps/packages/types` package, install it using "types": "workspace:*" in package.json dependencies
 - **TypeScript**: Strict mode enabled, version 5.8.3
 - **Node**: v22 LTS required
 
@@ -192,7 +192,7 @@ When adding or modifying code in any shared library package:
 2. **Implement the library**:
 
    - Add/modify code in the package's `src/` directory
-   - Import types: `import type {...} from 'types'` (NOT `@repo/types`)
+   - Import types: `import type {...} from 'types'`
    - Ensure exports are included in `src/index.ts`
 
 3. **Write comprehensive tests**:

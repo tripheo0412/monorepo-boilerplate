@@ -22,7 +22,7 @@ module.exports = {
 			'ts-jest',
 			{
 				tsconfig: {
-					// Allow importing from @repo/types in tests
+					// Allow importing from types in tests
 					moduleResolution: 'node',
 				},
 			},

@@ -21,7 +21,7 @@ This is a boilerplate package that serves as a starting point for creating new s
 
    ```json
    {
-   	"name": "@repo/your-new-lib",
+   	"name": "your-new-lib",
    	"version": "1.0.0",
    	"description": "Description of your library"
    }
